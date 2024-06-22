@@ -1,15 +1,19 @@
 package com.codewithdean.blog.blogapp.services.impl;
 
+import com.codewithdean.blog.blogapp.exceptions.*;
 import com.codewithdean.blog.blogapp.enities.User;
 import com.codewithdean.blog.blogapp.payloads.UserDto;
 import com.codewithdean.blog.blogapp.repositories.UserRepository;
 import com.codewithdean.blog.blogapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
 public class UserServiceImpl implements UserService {
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private UserRepository userRepository;
 
@@ -21,23 +25,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(UserDto user, Integer userId) {
-        return null;
+    public UserDto updateUser(UserDto userDto, Integer userId) {
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User"," Id ", userId));
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setAbout(userDto.getAbout());
+
+        User updatedUser = this.userRepository.save(user);
+        UserDto userDto1 = this.userToDto(updatedUser);
+        return userDto1;
     }
 
     @Override
     public UserDto getUserById(Integer userId) {
-        return null;
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", " Id ", userId));
+        return this.userToDto(user);
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return List.of();
+        List<User> users = this.userRepository.findAll();
+        List<UserDto> userDtos = users.stream().map(user -> this.userToDto(user)).collect(Collectors.toList());
+        return userDtos;
     }
 
     @Override
     public void deleteUser(Integer userId) {
-
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", " Id ", userId));
+        this.userRepository.delete(user);
     }
     public User dtoToUser(UserDto userDto){
         User user=new User();
