@@ -23,13 +23,13 @@ public class CategoryController {
 
     //Post - create category
     @PostMapping("/")
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto){
+    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto){
         CategoryDto createCategory = this.categoryService.createCategory(categoryDto);
         return new ResponseEntity<CategoryDto>(createCategory, HttpStatus.CREATED);
     }
     //Put - update category
     @PutMapping("/{catId}")
-    public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable Integer catId){
+    public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable Integer catId){
         CategoryDto updateCategoryDto = this.categoryService.updateCategory(categoryDto,catId);
         return new ResponseEntity<CategoryDto>(updateCategoryDto, HttpStatus.OK);
     }
@@ -42,8 +42,7 @@ public class CategoryController {
     //Get - get all categories
     @GetMapping("/")
     public ResponseEntity<List<CategoryDto>> getAllCategories(){
-        List<CategoryDto> categories = this.categoryService.getCategories();
-        return ResponseEntity.ok(categories);
+        return ResponseEntity.ok(this.categoryService.getCategories());
     }
     //Get - get single category
     @GetMapping("/{catId}")

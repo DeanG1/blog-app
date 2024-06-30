@@ -27,7 +27,7 @@ public class UserController  {
     @PostMapping("/")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
         UserDto createUserDto = this.userService.createUser(userDto);
-        return new ResponseEntity<>(createUserDto, HttpStatus.CREATED);
+        return new ResponseEntity<UserDto>(createUserDto, HttpStatus.CREATED);
     }
     //Get - get all users
     @GetMapping("/")
