@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto updateCategory(CategoryDto categoryDto, Integer categoryId) {
         Category category = this.categoryRepository.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("Category","Category Id", categoryId));
         category.setCategoryTitle(categoryDto.getCategoryTitle());
-        category.setCategoryDescriptipon(categoryDto.getCategoryDescription());
+        category.setCategoryDescription(categoryDto.getCategoryDescription());
         Category updatedCategory = this.categoryRepository.save(category);
         return this.modelMapper.map(updatedCategory, CategoryDto.class);
     }
@@ -51,7 +51,6 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDto> getCategories() {
         List<Category> categories = this.categoryRepository.findAll();
         List<CategoryDto> categoryDtos = categories.stream().map((category)-> this.modelMapper.map(category, CategoryDto.class)).collect(Collectors.toList());
-
-        return null;
+        return categoryDtos;
     }
 }
