@@ -5,6 +5,7 @@ import com.codewithdean.blog.blogapp.payloads.ApiResponse;
 import com.codewithdean.blog.blogapp.payloads.UserDto;
 import com.codewithdean.blog.blogapp.services.UserService;
 import jakarta.persistence.PreUpdate;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.aspectj.apache.bcel.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class UserController  {
 
     //Post - creating user
     @PostMapping("/")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
         UserDto createUserDto = this.userService.createUser(userDto);
         return new ResponseEntity<>(createUserDto, HttpStatus.CREATED);
     }
@@ -46,7 +47,7 @@ public class UserController  {
     //Then we get the needed attribute for updating the user
     //After that we create updateUser we call the exact function from the service and pass the object userDto and the id of the user
     //Finally we return the updated user
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable("userId") Integer uid){
+    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable("userId") Integer uid){
         UserDto updatedUser = this.userService.updateUser(userDto,uid);
         return ResponseEntity.ok(updatedUser);
     }
