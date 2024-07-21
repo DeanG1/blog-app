@@ -3,6 +3,7 @@ package com.codewithdean.blog.blogapp.controllers;
 import com.codewithdean.blog.blogapp.payloads.ApiResponse;
 import com.codewithdean.blog.blogapp.payloads.PostDto;
 import com.codewithdean.blog.blogapp.services.PostService;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,5 +47,17 @@ public class PostController {
     public ResponseEntity<List<PostDto>> getAllPosts(){
         List<PostDto> allPost = this.postService.getAllPosts();
         return new ResponseEntity<List<PostDto>>(allPost, HttpStatus.OK);
+    }
+    //Delete post
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId){
+        this.postService.deletePost(postId);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("Post deleted successfully!", true),HttpStatus.OK);
+    }
+    //Update post
+    @PutMapping("/posts/{postId}")
+    public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable Integer postId){
+        PostDto updatedPost = this.postService.updatePost(postDto, postId);
+        return new ResponseEntity<PostDto>(updatedPost, HttpStatus.OK);
     }
 }
