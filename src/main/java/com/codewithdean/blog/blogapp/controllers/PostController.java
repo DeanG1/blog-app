@@ -1,7 +1,9 @@
 package com.codewithdean.blog.blogapp.controllers;
 
+import com.codewithdean.blog.blogapp.payloads.ApiResponse;
 import com.codewithdean.blog.blogapp.payloads.PostDto;
 import com.codewithdean.blog.blogapp.services.PostService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,5 +33,18 @@ public class PostController {
     public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable Integer categoryId){
         List<PostDto> posts = this.postService.getPostsByCategory(categoryId);
         return new ResponseEntity<List<PostDto>>(posts, HttpStatus.OK);
+    }
+    //Get post by post id
+    @GetMapping("/posts/{postId}")
+    public ResponseEntity<PostDto> getSinglePost(@PathVariable Integer postId)
+    {
+        PostDto postDto = this.postService.getPostById(postId);
+        return new ResponseEntity<PostDto>(postDto, HttpStatus.OK);
+    }
+    //Get all posts
+    @GetMapping("/posts")
+    public ResponseEntity<List<PostDto>> getAllPosts(){
+        List<PostDto> allPost = this.postService.getAllPosts();
+        return new ResponseEntity<List<PostDto>>(allPost, HttpStatus.OK);
     }
 }
