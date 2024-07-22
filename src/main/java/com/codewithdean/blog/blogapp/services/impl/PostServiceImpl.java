@@ -11,6 +11,10 @@ import com.codewithdean.blog.blogapp.repositories.UserRepository;
 import com.codewithdean.blog.blogapp.services.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -61,12 +65,14 @@ public class PostServiceImpl implements PostService {
         Post post = this.postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "post", postId));
         return this.modelMapper.map(post, PostDto.class);
     }
-
     @Override
-    public List<PostDto> getAllPosts() {
-        List<Post> allPosts = this.postRepository.findAll();
-           List<PostDto> postDtos = allPosts.stream().map((post)->this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-        return postDtos;
+    public List<PostDto> getAllPosts(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Post> pagePost = this.postRepository.findAll(pageable);
+        List<Post> allPosts = pagePost.getContent();
+        return allPosts.stream()
+                .map(post -> this.modelMapper.map(post, PostDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
