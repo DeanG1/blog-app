@@ -5,6 +5,7 @@ import com.codewithdean.blog.blogapp.enities.Post;
 import com.codewithdean.blog.blogapp.enities.User;
 import com.codewithdean.blog.blogapp.exceptions.ResourceNotFoundException;
 import com.codewithdean.blog.blogapp.payloads.PostDto;
+import com.codewithdean.blog.blogapp.payloads.PostResponse;
 import com.codewithdean.blog.blogapp.repositories.CategoryRepository;
 import com.codewithdean.blog.blogapp.repositories.PostRepository;
 import com.codewithdean.blog.blogapp.repositories.UserRepository;
@@ -66,13 +67,21 @@ public class PostServiceImpl implements PostService {
         return this.modelMapper.map(post, PostDto.class);
     }
     @Override
-    public List<PostDto> getAllPosts(Integer pageNumber, Integer pageSize) {
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Post> pagePost = this.postRepository.findAll(pageable);
         List<Post> allPosts = pagePost.getContent();
-        return allPosts.stream()
+        List <PostDto> postDtos = allPosts.stream()
                 .map(post -> this.modelMapper.map(post, PostDto.class))
                 .collect(Collectors.toList());
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(postDtos);
+        postResponse.setPageNumber(pagePost.getNumber());
+        postResponse.setPageSize(pagePost.getSize());
+        postResponse.setTotalElements(pagePost.getTotalElements());
+        postResponse.setTotalPages(pagePost.getTotalPages());
+        postResponse.setLastPage(pagePost.isLast());
+        return postResponse;
     }
 
     @Override
