@@ -2,6 +2,7 @@ package com.codewithdean.blog.blogapp.controllers;
 
 import com.codewithdean.blog.blogapp.payloads.ApiResponse;
 import com.codewithdean.blog.blogapp.payloads.PostDto;
+import com.codewithdean.blog.blogapp.payloads.PostResponse;
 import com.codewithdean.blog.blogapp.services.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +44,11 @@ public class PostController {
     }
     //Get all posts
     @GetMapping("/posts")
-    public ResponseEntity<List<PostDto>> getAllPosts(
+    public ResponseEntity<PostResponse> getAllPosts(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
-        List<PostDto> allPosts = this.postService.getAllPosts(pageNumber, pageSize);
-        return new ResponseEntity<>(allPosts, HttpStatus.OK);
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
+        PostResponse postResponse = this.postService.getAllPosts(pageNumber, pageSize);
+        return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
     }
     //Delete post
     @DeleteMapping("/posts/{postId}")
