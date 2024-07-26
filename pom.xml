@@ -63,6 +63,11 @@
             <artifactId>spring-boot-starter-validation</artifactId>
             <version>3.3.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.codewithdean.blog</groupId>
+            <artifactId>blog-app</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
     <build>
