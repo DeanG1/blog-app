@@ -1,5 +1,6 @@
 package com.codewithdean.blog.blogapp.controllers;
 
+import com.codewithdean.blog.blogapp.exceptions.ApiException;
 import com.codewithdean.blog.blogapp.payloads.JwtAuthRequest;
 import com.codewithdean.blog.blogapp.payloads.JwtAuthResponse;
 import com.codewithdean.blog.blogapp.security.JwtTokenHelper;
@@ -46,7 +47,7 @@ public class AuthController {
         }
         catch(BadCredentialsException e){
             System.out.println("Invalid details!");
-            throw new Exception("Invalid username or password!");
+            throw new ApiException("Invalid username or password!");
         }
     }
 }
