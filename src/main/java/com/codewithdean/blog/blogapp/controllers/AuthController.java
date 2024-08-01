@@ -3,7 +3,9 @@ package com.codewithdean.blog.blogapp.controllers;
 import com.codewithdean.blog.blogapp.exceptions.ApiException;
 import com.codewithdean.blog.blogapp.payloads.JwtAuthRequest;
 import com.codewithdean.blog.blogapp.payloads.JwtAuthResponse;
+import com.codewithdean.blog.blogapp.payloads.UserDto;
 import com.codewithdean.blog.blogapp.security.JwtTokenHelper;
+import com.codewithdean.blog.blogapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -30,6 +32,8 @@ public class AuthController {
     private UserDetailsService userDetailsService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserService userService;
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> createToken(@RequestBody JwtAuthRequest request) throws Exception {
         this.authenticate(request.getUsername(),request.getPassword());
@@ -49,5 +53,10 @@ public class AuthController {
             System.out.println("Invalid details!");
             throw new ApiException("Invalid username or password!");
         }
+    }
+    @PostMapping("/register")
+    public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto){
+        UserDto registeredUser = this.userService.registerNewUser(userDto);
+        return new ResponseEntity<UserDto>(registeredUser, HttpStatus.CREATED);
     }
 }

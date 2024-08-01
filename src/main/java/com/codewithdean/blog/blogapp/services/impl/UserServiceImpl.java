@@ -1,13 +1,17 @@
 package com.codewithdean.blog.blogapp.services.impl;
 
+import com.codewithdean.blog.blogapp.config.AppConstants;
+import com.codewithdean.blog.blogapp.enities.Role;
 import com.codewithdean.blog.blogapp.exceptions.*;
 import com.codewithdean.blog.blogapp.enities.User;
 import com.codewithdean.blog.blogapp.payloads.UserDto;
+import com.codewithdean.blog.blogapp.repositories.RoleRepository;
 import com.codewithdean.blog.blogapp.repositories.UserRepository;
 import com.codewithdean.blog.blogapp.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +23,23 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Override
+    public UserDto registerNewUser(UserDto userDto) {
+        User user = this.modelMapper.map(userDto, User.class);
+        //encode the password
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        //roles
+        Role role = this.roleRepository.findById(AppConstants.NORMAL_USER).get();
+        user.getRoles().add(role);
+        User newUser = this.userRepository.save(user);
+        return this.modelMapper.map(newUser, UserDto.class);
+    }
+
     @Override
     public UserDto createUser(UserDto userDto) {
         User user = this.modelMapper.map(userDto, User.class);
