@@ -70,6 +70,7 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
+
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
