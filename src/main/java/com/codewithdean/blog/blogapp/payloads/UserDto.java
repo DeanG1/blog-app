@@ -1,5 +1,7 @@
 package com.codewithdean.blog.blogapp.payloads;
 import com.codewithdean.blog.blogapp.enities.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +21,19 @@ public class UserDto {
     @Email(message = "Email address is not valid")
     private String email;
     @NotEmpty
-    @Size(min = 5, max = 10, message = "Password must be atleast 5 characters and not more than 10 characters")
+    @Size(min = 5, max = 10, message = "Password must be atleast 5 characters and not more than 10 characters!")
     private String password;
     @NotEmpty
     private String about;
     private Set<RoleDto> roles = new HashSet<>();
+    @JsonIgnore
+    public String getPassword() {
+        return this.password;
+    }
+
+    @JsonProperty
+    public void setPassword(String password) {
+        this.password=password;
+    }
+
 }
