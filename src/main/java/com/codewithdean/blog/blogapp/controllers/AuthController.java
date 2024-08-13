@@ -1,11 +1,14 @@
 package com.codewithdean.blog.blogapp.controllers;
 
+import com.codewithdean.blog.blogapp.enities.User;
 import com.codewithdean.blog.blogapp.exceptions.ApiException;
 import com.codewithdean.blog.blogapp.payloads.JwtAuthRequest;
 import com.codewithdean.blog.blogapp.payloads.JwtAuthResponse;
 import com.codewithdean.blog.blogapp.payloads.UserDto;
+import com.codewithdean.blog.blogapp.repositories.UserRepository;
 import com.codewithdean.blog.blogapp.security.JwtTokenHelper;
 import com.codewithdean.blog.blogapp.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1/auth/")
@@ -31,13 +35,16 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserService userService;
+
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> createToken(@RequestBody JwtAuthRequest request) throws Exception {
-        this.authenticate(request.getUsername(),request.getPassword());
+        this.authenticate(request.getUsername(), request.getPassword());
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(request.getUsername());
         String token = this.jwtTokenHelper.generateToken(userDetails);
+
         JwtAuthResponse response = new JwtAuthResponse();
         response.setToken(token);
+        response.setUser(this.mapper.map((User) userDetails, UserDto.class));
         return new ResponseEntity<JwtAuthResponse>(response, HttpStatus.OK);
     }
 
@@ -55,5 +62,16 @@ public class AuthController {
     public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto){
         UserDto registeredUser = this.userService.registerNewUser(userDto);
         return new ResponseEntity<UserDto>(registeredUser, HttpStatus.CREATED);
+    }
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ModelMapper mapper;
+
+    @GetMapping("/current-user/")
+    public ResponseEntity<UserDto> getUser(Principal principal) {
+        User user = this.userRepository.findByEmail(principal.getName()).get();
+        return new ResponseEntity<UserDto>(this.mapper.map(user, UserDto.class), HttpStatus.OK);
     }
 }
