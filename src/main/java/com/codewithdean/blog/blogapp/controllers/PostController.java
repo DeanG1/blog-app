@@ -32,9 +32,10 @@ public class PostController {
     @Value("${project.image}")
     private String path;
     @PostMapping("/user/{userId}/category/{categoryId}/posts")
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto, @PathVariable Integer userId, @PathVariable Integer categoryId) {
+    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto, @PathVariable Integer userId,
+                                              @PathVariable Integer categoryId) {
         PostDto createPost = this.postService.createPost(postDto, userId, categoryId);
-        return new ResponseEntity<>(createPost, HttpStatus.CREATED);
+        return new ResponseEntity<PostDto>(createPost, HttpStatus.CREATED);
     }
     //Get by user
     @GetMapping("/user/{userId}/posts")
