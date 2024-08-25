@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,14 +43,8 @@ public class UserController  {
     }
     //Put - update user
     @PutMapping("/{userId}")
-    //Explanation - so we create new method for updating the selected user by id
-    //To do that we pass the object(with the params) we need UserDto
-    //Then in the brackets we request the content/body of the object UserDto
-    //Then we get the needed attribute for updating the user
-    //After that we create updateUser we call the exact function from the service and pass the object userDto and the id of the user
-    //Finally we return the updated user
-    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable("userId") Integer uid){
-        UserDto updatedUser = this.userService.updateUser(userDto,uid);
+    public ResponseEntity<UserDto> updateUser(@Validated(UserDto.Update.class) @RequestBody UserDto userDto, @PathVariable("userId") Integer uid) {
+        UserDto updatedUser = this.userService.updateUser(userDto, uid);
         return ResponseEntity.ok(updatedUser);
     }
 
