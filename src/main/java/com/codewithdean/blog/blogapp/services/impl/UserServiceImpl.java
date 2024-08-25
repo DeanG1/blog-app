@@ -49,17 +49,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, Integer userId) {
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User"," Id ", userId));
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
+
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+
+        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+            user.setPassword(userDto.getPassword());
+        }
+
         user.setAbout(userDto.getAbout());
 
         User updatedUser = this.userRepository.save(user);
-        UserDto userDto1 = this.userToDto(updatedUser);
-        return userDto1;
+        return this.userToDto(updatedUser);
     }
-
     @Override
     public UserDto getUserById(Integer userId) {
         User user = this.userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", " Id ", userId));
